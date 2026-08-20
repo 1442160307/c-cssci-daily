@@ -1,10 +1,3 @@
 分组,刊名,url,parser
 news,光明日报·理论版,https://theory.gmw.cn/,gmw_theory
 news,人民日报·理论版,https://theory.people.com.cn/,people_theory
-
-econ,经济研究,https://erj.ajcass.com/,cnki_journal
-econ,财经研究,https://cjx.sufe.edu.cn/,cnki_journal
-econ,当代财经,https://cjxs.jxufe.edu.cn/,cnki_journal
-econ,中国工业经济,https://gjjs.cass.cn/,cnki_journal
-econ,世界经济,https://sjjj.cass.cn/,cnki_journal
-econ,经济学(季刊),http://ccj.pku.edu.cn/,cnki_journal
