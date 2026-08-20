@@ -11,11 +11,13 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
-- uses: actions/checkout@v4
-  with:
-    fetch-depth: 0
-    token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -30,7 +32,7 @@ jobs:
       - name: Run fetch
         run: python fetch_c.py
 
-- name: Commit data via API
+      - name: Commit data via API
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -41,7 +43,7 @@ jobs:
           repo = os.environ["GITHUB_REPOSITORY"]
           token = os.environ["GH_TOKEN"]
           path = "data/daily_c.cssci.csv"
-          msg = f"daily update {os.popen('date -u +%Y-%m-%d\\ %H:%M\\ UTC').read().strip()}"
+          msg = "daily update " + os.popen("date -u '+%Y-%m-%d %H:%M UTC'").read().strip()
 
           local = Path(path)
           if not local.exists():
@@ -55,7 +57,8 @@ jobs:
           headers = {
               "Authorization": f"Bearer {token}",
               "Accept": "application/vnd.github+json",
-              "X-GitHub-Api-Version": "2022-11-28"
+              "X-GitHub-Api-Version": "2022-11-28",
+              "Content-Type": "application/json",
           }
 
           sha = None
@@ -76,12 +79,7 @@ jobs:
           if sha:
               payload["sha"] = sha
 
-          req2 = urllib.request.Request(
-              url,
-              data=json.dumps(payload).encode(),
-              method="PUT",
-              headers={**headers, "Content-Type": "application/json"}
-          )
+          req2 = urllib.request.Request(url, data=json.dumps(payload).encode(), method="PUT", headers=headers)
           with urllib.request.urlopen(req2) as r:
               print("updated", r.status)
           PY
