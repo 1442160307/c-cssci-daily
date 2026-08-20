@@ -13,6 +13,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+  with:
+    fetch-depth: 0
+    token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -27,10 +30,11 @@ jobs:
       - name: Run fetch
         run: python fetch_c.py
 
-      - name: Commit data
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/daily_c.cssci.csv || true
-          git diff --cached --quiet || git commit -m "daily update $(date -u +'%Y-%m-%d %H:%M UTC')"
-          git push
+   - name: Commit data
+  run: |
+    git config user.name "github-actions[bot]"
+    git config user.email "github-actions[bot]@users.noreply.github.com"
+    git add data/
+    git commit -m "daily update $(date -u '+%Y-%m-%d %H:%M UTC')" || echo "no changes"
+    git pull --rebase --autostash origin main
+    git push origin main
